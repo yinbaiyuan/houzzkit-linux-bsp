@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=rptest
+Exec=/usr/bin/testApp
+Icon=/usr/share/icon/icon_testApp.png
+Type=Application
+
