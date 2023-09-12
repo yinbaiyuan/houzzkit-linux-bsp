@@ -1,0 +1,105 @@
+#
+# RCU-related debugging configuration options
+#
+
+menu "RCU Debugging"
+
+config PROVE_RCU
+	def_bool PROVE_LOCKING
+
+config TORTURE_TEST
+	tristate
+	default n
+
+config RCU_PERF_TEST
+	tristate "performance tests for RCU"
+	depends on DEBUG_KERNEL
+	select TORTURE_TEST
+	select SRCU
+	select TASKS_RCU
+	default n
+	help
+	  This option provides a kernel module that runs performance
+	  tests on the RCU infrastructure.  The kernel module may be built
+	  after the fact on the running kernel to be tested, if desired.
+
+	  Say Y here if you want RCU performance tests to be built into
+	  the kernel.
+	  Say M if you want the RCU performance tests to build as a module.
+	  Say N if you are unsure.
+
+config RCU_TORTURE_TEST
+	tristate "torture tests for RCU"
+	depends on DEBUG_KERNEL
+	select TORTURE_TEST
+	select SRCU
+	select TASKS_RCU
+	default n
+	help
+	  This option provides a kernel module that runs torture tests
+	  on the RCU infrastructure.  The kernel module may be built
+	  after the fact on the running kernel to be tested, if desired.
+
+	  Say Y here if you want RCU torture tests to be built into
+	  the kernel.
+	  Say M if you want the RCU torture tests to build as a module.
+	  Say N if you are unsure.
+
+config RCU_CPU_STALL_TIMEOUT
+	int "RCU CPU stall timeout in seconds"
+	depends on RCU_STALL_COMMON
+	range 3 300
+	default 21
+	help
+	  If a given RCU grace period extends more than the specified
+	  number of seconds, a CPU stall warning is printed.  If the
+	  RCU grace period persists, additional CPU stall warnings are
+	  printed at more widely spaced intervals.
+
+config BOOTPARAM_RCU_STALL_PANIC
+	bool "Panic (Reboot) On RCU CPU stall timeout"
+	depends on RCU_STALL_COMMON
+	help
+	  Say Y here to enable the kernel to panic on "rcu stall timeout",
+	  which are bugs that RCU grace period extends more than 21 seconds
+	  (configurable using the RCU_CPU_STALL_TIMEOUT).
+
+	  The panic can be used in combination with panic_timeout,
+	  to cause the system to reboot automatically after a
+	  stall timeout. This feature is useful for high-availability
+	  systems that have uptime guarantees and where a stall timeout
+	  must be resolved ASAP.
+
+	  Say N if unsure.
+
+config BOOTPARAM_RCU_STALL_PANIC_VALUE
+	int
+	depends on RCU_STALL_COMMON
+	range 0 1
+	default 0 if !BOOTPARAM_RCU_STALL_PANIC
+	default 1 if BOOTPARAM_RCU_STALL_PANIC
+
+config RCU_TRACE
+	bool "Enable tracing for RCU"
+	depends on DEBUG_KERNEL
+	default y if TREE_RCU
+	select TRACE_CLOCK
+	help
+	  This option enables additional tracepoints for ftrace-style
+	  event tracing.
+
+	  Say Y here if you want to enable RCU tracing
+	  Say N if you are unsure.
+
+config RCU_EQS_DEBUG
+	bool "Provide debugging asserts for adding NO_HZ support to an arch"
+	depends on DEBUG_KERNEL
+	help
+	  This option provides consistency checks in RCU's handling of
+	  NO_HZ.  These checks have proven quite helpful in detecting
+	  bugs in arch-specific NO_HZ code.
+
+	  Say N here if you need ultimate kernel/user switch latencies
+	  Say Y if you are unsure
+
+endmenu # "RCU Debugging"

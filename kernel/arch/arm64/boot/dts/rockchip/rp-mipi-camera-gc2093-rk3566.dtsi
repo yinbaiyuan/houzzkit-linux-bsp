@@ -1,0 +1,115 @@
+/ {
+
+        vcc_camera: vcc-camera-regulator {
+                compatible = "regulator-fixed";
+                gpio = <&gpio0 RK_PC1 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&camera_pwr>;
+                regulator-name = "vcc_camera";
+                enable-active-high;
+                regulator-always-on;
+                regulator-boot-on;
+        };
+
+
+};
+
+
+
+&i2c2 {
+        status = "okay";
+	pinctrl-name = "default";
+	pinctrl-0 = <&i2c2m1_xfer>;
+        gc2093: gc2093@37 {
+                compatible = "galaxycore,gc2093";
+                status = "okay";
+                reg = <0x37>;
+                clocks = <&cru CLK_CAM0_OUT>;
+                clock-names = "xvclk";
+                power-domains = <&power RK3568_PD_VI>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&cam_clkout0>;
+	        pwdn-gpios = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
+	        reset-gpios = <&gpio4 RK_PC0 GPIO_ACTIVE_LOW>;
+                rockchip,camera-module-index = <0>;
+                rockchip,camera-module-facing = "back";
+                rockchip,camera-module-name = "YT-RV1109-2-V1";
+                rockchip,camera-module-lens-name = "40IR-2MP-F20";
+                port {
+                        ucam_out0: endpoint {
+                                remote-endpoint = <&mipi_in_ucam0>;
+                                data-lanes = <1 2>;
+                        };
+                };
+        };
+};
+
+
+&rkisp {
+        status = "okay";
+};
+
+&rkisp_mmu {
+        status = "okay";
+};
+
+&rkisp_vir0 {
+        status = "okay";
+
+        port {
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                isp0_in: endpoint@0 {
+                        reg = <0>;
+                        remote-endpoint = <&csidphy_out>;
+                };
+        };
+};
+
+&csi2_dphy_hw {
+        status = "okay";
+};
+
+
+
+&csi2_dphy1 {
+        status = "okay";
+
+        ports {
+                #address-cells = <1>;
+                #size-cells = <0>;
+                port@0 {
+                        reg = <0>;
+                        #address-cells = <1>;
+                        #size-cells = <0>;
+
+                        mipi_in_ucam0: endpoint@1 {
+                                reg = <1>;
+                                remote-endpoint = <&ucam_out0>;
+                                data-lanes = <1 2>;
+                        };
+              };
+                port@1 {
+                        reg = <1>;
+                        #address-cells = <1>;
+                        #size-cells = <0>;
+
+                        csidphy_out: endpoint@0 {
+                                reg = <0>;
+                                remote-endpoint = <&isp0_in>;
+                        };
+                };
+        };
+};
+
+
+&pinctrl {
+        cam {
+                camera_pwr: camera-pwr {
+                        rockchip,pins =
+                                /* camera power en */
+                                <0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
+                };
+        };
+};

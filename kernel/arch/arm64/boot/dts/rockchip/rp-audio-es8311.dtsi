@@ -1,0 +1,49 @@
+
+/ {
+	i2s1_sound: i2s1-sound {
+		status = "okay";
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,name = "rockchip,es8311";
+		simple-audio-card,cpu {
+				sound-dai = <&i2s1_8ch>;
+		};
+		simple-audio-card,codec {
+				sound-dai = <&es8311>;
+		};
+	};	
+};
+
+&i2s1_8ch {
+	status = "okay";
+	pinctrl-0 = <&i2s1m0_sclktx
+       		     &i2s1m0_lrcktx
+       		     &i2s1m0_sdi0
+       		     &i2s1m0_sdo0>;
+};
+
+&i2c3 {
+	status = "okay";
+	clock-frequency = <400000>;
+		
+	es8311: es8311@18 {
+			status = "okay";
+			compatible = "everest,es8311";
+			reg = <0x18>;
+			clocks = <&cru I2S1_MCLKOUT>;
+			clock-names = "mclk";
+			adc-pga-gain = <6>;     /* 18dB */
+			adc-volume = <0xbf>;    /* 0dB */
+			dac-volume = <0xbf>;    /* 0dB */
+			aec-mode = "dac left, adc right";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2s1m0_mclk>;
+			assigned-clocks = <&cru I2S1_MCLKOUT>, <&cru I2S1_MCLK_TX_IOE>;
+			assigned-clock-rates = <12288000>;
+			assigned-clock-parents = <&cru I2S1_MCLKOUT_TX>, <&cru I2S1_MCLKOUT_TX>;
+			//spk-ctl-gpios = <&gpio2 RK_PA5 GPIO_ACTIVE_HIGH>;
+			#sound-dai-cells = <0>;
+	};
+};
+

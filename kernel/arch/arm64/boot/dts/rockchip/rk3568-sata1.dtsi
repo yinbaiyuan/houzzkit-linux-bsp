@@ -1,0 +1,18 @@
+/**
+ * enable sata1 relavent config for rk3568
+ */
+ 
+
+
+&usbhost_dwc3 {
+    /** redefine for combphy used to be sata */
+    phys = <&u2phy0_host>;
+};
+
+&combphy1_usq {
+    status = "okay";
+};
+
+&sata1 {
+    status = "okay";
+};

@@ -1,0 +1,15 @@
+
+
+&can0 {
+	compatible = "rockchip,can-1.0";
+	assigned-clocks = <&cru CLK_CAN0>;
+	assigned-clock-rates = <150000000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&can0m1_pins>;
+	status = "okay";
+};
+
+&i2c1 {
+    /** disabled for used to be can0 */
+    status = "disabled";
+};

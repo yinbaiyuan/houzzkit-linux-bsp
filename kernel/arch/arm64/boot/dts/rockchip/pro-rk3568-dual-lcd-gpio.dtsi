@@ -1,0 +1,43 @@
+/**
+ * multiple lcd config compatible
+ */
+
+// MIPI DSI0
+&dsi0_panel {
+	/** delete property that conflict with other panel, they are common */
+	/delete-property/ power-supply;
+	/delete-property/ reset-gpios;
+	/delete-property/ pinctrl-names;
+	/delete-property/ pinctrl-0;
+	backlight = <&backlight4>;
+};
+
+// MIPI DSI1
+&dsi1_panel {
+	power-supply = <&vcc3v3_lcd0_n>;
+	reset-gpios = <&gpio4 RK_PD2 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&lcd_rst_gpio>;
+	backlight = <&backlight5>;
+};
+
+// LVDS
+&lvds_panel {
+	backlight = <&backlight4>;
+	
+	/** delete property that conflict with other panel, they are common */
+	/delete-property/ power-supply;
+	/delete-property/ reset-gpios;
+	/delete-property/ pinctrl-names;
+	/delete-property/ pinctrl-0;
+};
+
+// EDP
+&edp_panel {
+	backlight = <&backlight5>;
+	
+	/** delete property that conflict with other panel, it is common */
+	/delete-property/ power-supply;
+};
+
+

@@ -1,0 +1,13 @@
+/**
+ * enable sata2 relavent config for rk3568
+ */
+ 
+
+
+&combphy2_psq {
+    status = "okay";
+};
+
+&sata2 {
+    status = "okay";
+};

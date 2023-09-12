@@ -1,0 +1,41 @@
+/**
+ * enable pcie3x2 relavent config for rk3568
+ */
+ 
+/ {
+	vcc3v3_pcie3: gpio-regulator-pcie3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_pcie3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		enable-active-high;
+        /**
+         * gpio config please refer to main dts if have
+		 * gpio = <&gpio* ** ***>;
+         */
+		startup-delay-us = <5000>;
+		vin-supply = <&dc_12v>;
+	};
+};
+
+&pcie30phy {
+	status = "okay";
+};
+
+/** pcie3x1 and pcie3x2*/
+&pcie3x1 {
+	rockchip,bifurcation;
+	status = "okay";
+	vpcie3v3-supply = <&vcc3v3_pcie3>;
+};
+
+&pcie3x2 {
+    /**
+     * gpio please refer to main dts:
+	 * reset-gpios = <&gpio* ** ***>;
+     */
+	rockchip,bifurcation;
+    	status = "okay";
+    	vpcie3v3-supply = <&vcc3v3_pcie3>;
+};
+

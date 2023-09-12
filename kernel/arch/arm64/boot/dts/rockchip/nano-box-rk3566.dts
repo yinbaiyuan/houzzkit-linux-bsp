@@ -1,0 +1,319 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+/dts-v1/;
+
+//rk3566-evb1-ddr4-v10
+//#include "rk3566-evb1-ddr4-v10.dtsi"
+
+#include "rk3566-evb-rpdzkj-rk809.dtsi"
+
+
+#include "rk3568-linux.dtsi"
+/*************************camera***********************/
+#include "rp-mipi-camera-gc2093-rk3566.dtsi"
+/***************************************************/
+
+
+/*************************adc key***********************/
+#include "rp-adc-key.dtsi"
+/***************************************************/
+
+/*************************gmac***********************/
+#include "rp-gmac1-m0-pro-rk3566.dtsi"
+/***************************************************/
+
+/****************** SINGLE LCD ***************/
+#include "nano-box-rk3566-single-lcd-gpio.dtsi"
+/* HDMI */
+//#include "rp-lcd-hdmi.dtsi"
+
+/* MIPI0 */
+//#include "rp-lcd-mipi0-5-720-1280-v2-boxTP.dtsi"
+#include "rp-lcd-mipi0-7-720-1280.dtsi"
+//#include "rp-lcd-mipi0-8-800-1280-v3.dtsi"
+//#include "rp-lcd-mipi0-8-1200-1920.dtsi"
+//#include "rp-lcd-mipi0-10-800-1280-v3.dtsi"
+//#include "rp-lcd-mipi0-10-1200-1920.dtsi"
+
+/** LVDS */
+//#include "rp-lcd-lvds-10-1280-800.dtsi"
+//#include "rp-lcd-lvds-7-1024-600-v2.dtsi"
+
+/* EDP */
+//#include "rp-lcd-edp-13-1920-1080.dtsi"
+//#include "rp-lcd-edp-13.3-15.6-1920-1080.dtsi"
+
+
+
+
+
+
+
+
+
+
+/ {
+	model = "rpdzkj nano-box-rk3566 base on Rockchip RK3566 EVB1 DDR4 V10 Board";
+	compatible = "rpdzkj,nano-box-rk3566", "rockchip,rk3566";
+
+        
+        rp_power{
+                status = "okay";
+                compatible = "rp_power";
+                rp_not_deep_sleep = <1>;
+
+//#define GPIO_FUNCTION_OUTPUT 0
+//#define GPIO_FUNCTION_INPUT 1
+//#define GPIO_FUNCTION_IRQ 2
+//#define GPIO_FUNCTION_FLASH 3
+//#define GPIO_FUNCTION_OUTPUT_CTRL 4
+
+                pwr_5v_3v3 {	//3.3v 5v enable
+                        gpio_num = <&gpio2 RK_PB3 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+                
+                led {       //system led
+                        gpio_num = <&gpio3 RK_PC2 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+                
+		usb_pwr {       //usb host power and otg power
+                        gpio_num = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                usb_rst {       //usb hub reset
+                        gpio_num = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                spk_en {       //SPK ENABLE
+                        gpio_num = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                spk_mute {       //SPK MUTE
+                        gpio_num = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
+                        gpio_function = <4>;
+                };
+  
+              usb_mode {       //OTG SWITCH
+                        gpio_num = <&gpio0 RK_PC2 GPIO_ACTIVE_LOW>;
+                        gpio_function = <0>;
+                };
+		otg_pwr {
+		       gpio_num = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+		};
+};
+
+
+
+        rp_gpio{
+                status = "okay";
+                compatible = "rp_gpio";
+
+/***** SPI_FLASH ********/
+                gpio1d0 {      
+                        gpio_num = <&gpio1 RK_PD0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+                gpio1d1 {       
+                        gpio_num = <&gpio1 RK_PD1 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+                gpio1d2 {       
+                        gpio_num = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+                gpio1d3 {       
+                        gpio_num = <&gpio1 RK_PD3 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+                gpio1d4 {       
+                        gpio_num = <&gpio1 RK_PD4 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+/***** PDM ********/
+
+                gpio4a0 {
+                        gpio_num = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+                gpio4a1 {
+                        gpio_num = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+                gpio4a2 {
+                        gpio_num = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+                gpio4a3 {
+                        gpio_num = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+	};	
+
+        stm706 {
+                status = "okay";
+                compatible = "stm706";
+                reset_gpio = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+                wdt_gpio = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
+        };
+
+};
+
+
+&pmu_io_domains {
+        status = "okay";
+        pmuio2-supply = <&vcc3v3_pmu>;
+        vccio1-supply = <&vccio_acodec>;
+        vccio3-supply = <&vccio_sd>;
+        vccio4-supply = <&vcc_3v3>;
+        vccio5-supply = <&vcc_3v3>;
+        vccio6-supply = <&vcc_1v8>;
+        vccio7-supply = <&vcc_3v3>;
+};
+
+
+
+&i2c0 {
+        status = "okay";
+
+        vdd_cpu: syr837@40 {
+                compatible = "silergy,syr827";
+                reg = <0x40>;
+                vin-supply = <&vcc5v0_sys>;
+                regulator-compatible = "fan53555-reg";
+                pinctrl-0 = <&vsel1_gpio>;
+                vsel-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+                regulator-name = "vdd_cpu";
+                regulator-min-microvolt = <712500>;
+                regulator-max-microvolt = <1390000>;
+                regulator-ramp-delay = <2300>;
+                fcs,suspend-voltage-selector = <1>;
+                regulator-always-on;
+                regulator-boot-on;
+                regulator-initial-state = <3>;
+                regulator-state-mem {
+                        regulator-off-in-suspend;
+                };
+        };
+
+/*
+        vdd_cpu: tcs4525@1c {
+                compatible = "tcs,tcs452x";
+                reg = <0x1c>;
+                vin-supply = <&vcc5v0_sys>;
+                regulator-compatible = "fan53555-reg";
+                regulator-name = "vdd_cpu";
+                regulator-min-microvolt = <712500>;
+                regulator-max-microvolt = <1390000>;
+                regulator-ramp-delay = <2300>;
+                fcs,suspend-voltage-selector = <1>;
+                regulator-boot-on;
+                regulator-always-on;
+                regulator-state-mem {
+                        regulator-off-in-suspend;
+                };
+        };
+*/
+};
+
+&gmac1 {
+    tx_delay = <0x42>;
+    rx_delay = <0x2d>;
+};
+
+
+&i2c4 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c4m1_xfer>;
+
+        rtc@51 {
+                status = "okay";
+                compatible = "rtc,hym8563";
+                reg = <0x51>;
+        };
+};
+
+&i2c5 {
+	status = "disabled";
+};
+
+
+&uart3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3m0_xfer>;
+};
+
+&uart6 {
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart6m0_xfer>;
+};
+
+&uart7 {
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart7m0_xfer>;
+};
+
+&uart9 {
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart9m0_xfer>;
+};
+
+&spi1 {
+	status = "okay";
+
+    spi1_dev@0 {
+        compatible = "rockchip,spidev";
+        reg = <0>;
+        spi-max-frequency = <12000000>;
+        spi-lsb-first;
+    };
+};
+
+&spi2 {
+        status = "okay";
+
+    spi2_dev@0 {
+        compatible = "rockchip,spidev";
+        reg = <0>;
+        spi-max-frequency = <12000000>;
+        spi-lsb-first;
+    };
+};
+
+
+&dmc {
+	status = "disabled";
+};
+
+&dfi {
+	status = "disabled";
+};
+
+
+&pinctrl {
+	pmic {
+		vsel1_gpio: vsel1-gpio {
+			rockchip,pins =
+				<0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+};

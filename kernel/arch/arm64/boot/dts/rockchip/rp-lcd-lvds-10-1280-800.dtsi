@@ -1,0 +1,172 @@
+#include <dt-bindings/display/media-bus-format.h>
+#include "rp-lcd-hdmi.dtsi"
+#define RP_SINGLE_LCD
+
+&lvds_panel {
+	status = "okay";
+	compatible = "simple-panel";
+	enable-delay-ms = <20>;
+	prepare-delay-ms = <20>;
+	unprepare-delay-ms = <20>;
+	disable-delay-ms = <20>;
+	bus-format = <MEDIA_BUS_FMT_RGB888_2X12_BE>;
+	width-mm = <217>;
+	height-mm = <136>;
+		
+		/*
+		 * power-supply = <>;
+		 * reset-gpios = <>;
+		 *
+		 * lcd reset pin and power supply
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+		
+	display-timings {
+		native-mode = <&timing0>;
+
+		timing0: timing0 {
+			clock-frequency = <72000000>;
+			hactive = <1280>;
+			vactive = <800>;
+			hback-porch = <138>;
+			hfront-porch = <136>;
+			vback-porch = <10>;
+			vfront-porch = <10>;
+			hsync-len = <20>;
+			vsync-len = <3>;
+			hsync-active = <0>;
+			vsync-active = <0>;
+			de-active = <0>;
+			pixelclk-active = <0>;
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			reg = <0>;
+			dual-lvds-even-pixels;
+			panel_in_lvds: endpoint {
+				remote-endpoint = <&lvds_out_panel>;
+			};
+		};
+	};
+};
+
+&lvds {
+	status = "okay";
+	ports {
+		port@1 {
+			reg = <1>;
+
+			lvds_out_panel: endpoint {
+				remote-endpoint = <&panel_in_lvds>;
+			};
+		};
+	};
+};
+
+
+
+
+&pwm4 {
+	status = "okay";
+};
+
+&dsi0 {
+	status = "disabled";
+};
+
+&dsi0_in_vp0 {
+	status = "disabled";
+};
+
+&dsi0_in_vp1 {
+	status = "disabled";
+};
+
+&video_phy0 {
+	status = "okay";
+};
+
+&lvds_in_vp1 {
+	status = "okay";
+};
+
+&lvds_in_vp2 {
+	status = "disabled";
+};
+
+&route_lvds {
+	status = "okay";
+	connect = <&vp1_out_lvds>;
+};
+
+
+&gt9xx {
+        status = "okay";
+
+        compatible = "goodix,gt9xx";
+        reg = <0x5d>;
+        gtp_resolution_x = <1280>;
+        gtp_resolution_y = <800>;
+        gtp_int_tarigger = <1>;
+        gtp_change_x2y = <0>;
+        gtp_overturn_x = <0>;
+        gtp_overturn_y = <0>;
+        gtp_send_cfg = <1>;
+        gtp_touch_wakeup = <1>;
+
+		/**
+		 * goodix_rst_gpio = <>;
+		 * goodix_irq_gpio = <>;
+		 *
+		 * touch panel interrupt and reset pin
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+        goodix,cfg-group2 = [
+		41 00 05 20 03 0A 3D 00 01 08
+		32 05 64 3C 03 05 00 00 00 00
+		00 00 00 1C 1E 22 14 90 30 AA
+		1E 1C D6 09 00 00 01 9A 04 25
+		00 00 00 00 00 00 00 00 00 00
+		00 14 2F 94 C5 02 07 00 00 04
+		A6 15 00 8E 19 00 79 1E 00 67
+		24 00 59 2B 00 59 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 00 01 04 05 06 07 08 09
+		0C 0D 0E 0F 10 11 14 15 16 17
+		18 19 00 00 00 00 00 00 00 00
+		00 00 00 02 04 06 07 08 0A 0C
+		0D 0E 0F 10 11 12 13 14 2A 29
+		28 27 26 25 24 23 22 21 20 1F
+		1E 1C 1B 19 00 00 00 00 00 00
+		00 00 00 00 C8 01
+	];
+	goodix,cfg-group3 = [
+	       5A 00 05 20 03 02 0D 00 01 0A 28
+	       0A 50 32 03 05 00 00 00 00 00 00
+	       08 00 00 00 00 8C 2E 0E 30 32 34
+	       06 00 00 00 82 02 1D 00 01 00 00
+	       00 00 00 00 00 00 00 24 60 94 C5
+	       02 07 00 00 04 97 27 00 80 30 00
+	       6D 3B 00 60 47 00 54 57 00 54 00
+	       00 00 00 00 00 00 00 00 00 00 00
+	       00 00 00 00 00 00 00 00 00 00 00
+	       00 00 00 00 00 00 00 00 00 00 00
+	       00 00 1C 1A 18 16 14 12 10 0E 0C
+	       0A 08 06 04 02 00 00 00 00 00 00
+	       00 00 00 00 00 00 00 00 00 00 2A
+	       29 28 26 24 22 21 20 1F 1E 1D 1C
+	       18 16 14 13 12 10 0F 0C 0A 08 06
+	       04 02 00 00 00 00 00 00 00 00 00
+	       00 00 00 00 00 00 00 00 D4 01
+               ];
+};
+

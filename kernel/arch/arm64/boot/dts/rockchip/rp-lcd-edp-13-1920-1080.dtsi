@@ -1,0 +1,148 @@
+#include "rp-lcd-hdmi.dtsi"
+#define RP_SINGLE_LCD
+#define RP_EDP_USED
+
+
+&edp_panel {
+	status = "okay";
+        compatible = "simple-panel";
+        prepare-delay-ms = <20>;
+        enable-delay-ms = <20>;
+        disable-delay-ms = <20>;
+        unprepare-delay-ms = <20>;
+	
+		/**
+		 * power-supply = <>;
+		 * reset-gpios = <>;
+		 *
+		 * lcd reset pin and power supply
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+		 
+        display-timings {
+                native-mode = <&timing1>;
+
+                timing0: timing0 {//EDP 15.6
+                        clock-frequency = <150000000>;
+                        hactive = <1920>;
+                        vactive = <1080>;
+                        hfront-porch = <160>;
+                        hsync-len = <32>;
+                        hback-porch = <160>;
+                        vfront-porch = <3>;
+                        vsync-len = <5>;
+                        vback-porch = <23>;
+                        hsync-active = <0>;
+                        vsync-active = <0>;
+                        de-active = <0>;
+                        pixelclk-active = <0>;
+                };
+
+                timing1: timing1 {// EDP 13.3 
+                        clock-frequency = <138000000>;
+                        hactive = <1920>;
+                        vactive = <1080>;
+                        hfront-porch = <48>;
+                        hsync-len = <32>;
+                        hback-porch = <80>;
+                        vfront-porch = <3>;
+                        vsync-len = <5>;
+                        vback-porch = <23>;
+                        hsync-active = <0>;
+                        vsync-active = <0>;
+                        de-active = <0>;
+                        pixelclk-active = <0>;
+                };
+        };
+
+        ports {
+                	panel_in_edp: endpoint {
+                        	remote-endpoint = <&edp_out_panel>;
+			};
+	};
+};
+
+
+
+&edp {
+	status = "okay";
+	force-hpd;
+        ports {
+                port@1 {
+                        reg = <1>;
+
+                        edp_out_panel: endpoint {
+                                remote-endpoint = <&panel_in_edp>;
+                        };
+                };
+        };
+};
+
+&edp_phy {
+	status = "okay";
+};
+
+&edp_in_vp0 {
+	status = "okay";
+};
+
+&edp_in_vp1 {
+	status = "disabled";
+};
+
+&hdmi_in_vp0 {
+	status = "disabled";
+};
+&hdmi_in_vp1 {
+	status = "okay";
+};
+
+&route_edp {
+	status = "okay";
+	connect = <&vp0_out_edp>;
+};
+
+
+
+&gt9xx {
+	status = "okay";
+	compatible = "goodix,gt9xx";
+	reg = <0x5d>;
+	gtp_resolution_x = <1920>;
+	gtp_resolution_y = <1080>;
+	gtp_int_tarigger = <1>;
+	gtp_change_x2y = <0>;
+	gtp_overturn_x = <0>;
+	gtp_overturn_y = <0>;
+	gtp_send_cfg = <1>;
+	gtp_touch_wakeup = <1>;
+
+	/**
+	 * goodix_rst_gpio = <>;
+	 * goodix_irq_gpio = <>;
+	 *
+	 * touch panel interrupt and reset pin
+	 * please refer to ***-lcd-gpio.dtsi
+	 * that included in main dts.
+	 */
+
+	goodix,cfg-group0 = [
+		64 80 07 38 04 0A 3D 00 01 C8 28 0F
+		55 37 03 05 00 00 00 00 00 00 00 18
+		1A 1E 14 90 30 AA 25 27 0F 0A 00 00
+		00 5A 03 11 00 00 00 00 00 00 00 00
+		00 25 00 19 37 94 D5 02 08 14 00 04
+		9B 1B 00 8E 1F 00 80 25 00 76 2B 00
+		6E 32 00 6E 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 10 00 00 00 00
+		00 00 00 00 19 18 17 16 15 14 11 10
+		0F 0E 0D 0C 09 08 07 06 05 04 01 00
+		00 00 00 00 00 00 00 00 00 00 00 02
+		04 06 07 08 0A 0C 0D 0E 0F 10 11 12
+		13 14 19 1B 1C 1E 1F 20 21 22 23 24
+		25 26 27 28 29 2A 00 00 00 00 00 00
+		00 00 00 00 B7 01
+	];
+};

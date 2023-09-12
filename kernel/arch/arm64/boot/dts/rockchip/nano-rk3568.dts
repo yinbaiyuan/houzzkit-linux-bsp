@@ -1,0 +1,542 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ *
+ */
+ 
+/dts-v1/;
+//rk3568-evb1-ddr4-v10
+// #include "rk3568-evb1-ddr4-v10.dtsi"
+//#include "rk3568-base-no-rk809.dtsi"
+
+#include "rk3568-evb-rpdzkj-pwm-regulator.dtsi"
+
+#include "rk3568-linux.dtsi"
+
+/*************************camera***********************/
+#include "rp-camera-mipi-gc2093-single-2lane.dtsi"
+/***************************************************/
+
+
+/*************************adc key***********************/
+#include "rp-adc-key.dtsi"
+/***************************************************/
+
+/*************************CAN**********************/
+#include "rp-can1-m1-rk3568.dtsi"
+/**************************************************/
+/*********************PCIE**************************/
+#include "rk3568-pcie2x1.dtsi"
+#include "rk3568-pcie3x1x1.dtsi"
+#include "rk3568-pcie3x2.dtsi"
+/***************************************************/
+
+/*************************SATA***********************/
+//#include "rk3568-sata2.dtsi"
+/***************************************************/
+
+/* audio */
+#include "rp-audio-es8311.dtsi"
+
+#include "lcd-gpio-nano-rk3568.dtsi"     //gpio config for lcd
+
+/****** LCD config reference **/
+/** single HDMI */
+//#include "rp-lcd-hdmi.dtsi"
+
+/** mipi0 +hdmi */
+//#include "rp-lcd-mipi0-5-720-1280-v2-boxTP.dtsi"
+#include "rp-lcd-mipi0-7-720-1280.dtsi"
+//#include "rp-lcd-mipi0-8-800-1280-v3.dtsi"
+//#include "rp-lcd-mipi0-8-1200-1920.dtsi"
+//#include "rp-lcd-mipi0-10-800-1280-v3.dtsi"
+//#include "rp-lcd-mipi0-10-1200-1920.dtsi"
+
+/** MIPI1toLVDS + HDMI */
+//#include "rp-lcd-mipi1tolvds-gm8775c-10-1024-600-raw.dtsi"
+//#include "rp-lcd-mipi1tolvds-gm8775c-1920-1080.dtsi"
+
+/** LVDS + HDMI */
+//#include "rp-lcd-lvds-7-1024-600-v2.dtsi"
+//#include "rp-lcd-lvds-10-1280-800.dtsi"
+
+/** EDP + HDMI */
+//#include "rp-lcd-edp-13-1920-1080.dtsi"
+//#include "rp-lcd-edp-13.3-15.6-1920-1080.dtsi"
+
+
+
+/{
+        model = "rpdzkj nano-rk3568 base on Rockchip RK3568 EVB1 DDR4 V10 Board";
+        compatible = "rpdzkj,nano-rk3568", "rockchip,rk3568";
+	
+
+       rp_power{
+                status = "okay";
+                compatible = "rp_power";
+                rp_not_deep_sleep = <1>;
+
+                pinctrl-names = "default";
+                pinctrl-0 = <&led_pin &fan_pin &usb_pins>;
+                
+                //#define GPIO_FUNCTION_OUTPUT 0
+                //#define GPIO_FUNCTION_INPUT 1
+                //#define GPIO_FUNCTION_IRQ 2
+                //#define GPIO_FUNCTION_FLASH 3
+                //#define GPIO_FUNCTION_OUTPUT_CTRL 4
+
+                /**
+                 * gpioxxx {                    // the node name will display on /proc/rp_power, you can define any character string
+                 *      gpio_num = <>;          // gpio you want ot control
+                 *      gpio_function = <>;     // function of current gpio, refer to above define.
+                 * };
+                 */
+
+                led {	//system led
+                        gpio_num = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                fan {	//fan
+                        gpio_num = <&gpio4 RK_PC0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                otg_power {       //usb otg power
+                        gpio_num = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                hub_rst {	//usb hub
+                        gpio_num = <&gpio3 RK_PA3 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                usb3_pwr {       //usb3 power en
+                        gpio_num = <&gpio4 RK_PA6 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+                usb2_vdd0 {       //usb2.0_vdd0 power en
+                        gpio_num = <&gpio4 RK_PB7 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+								usb2_vdd1 {       //usb2.0_vdd1 power en
+                        gpio_num = <&gpio3 RK_PA2 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+
+                spk_en {       //spk enable
+                        gpio_num = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <4>;
+                };
+                spk_mute {       //spk mute
+                        gpio_num = <&gpio0 RK_PA3 GPIO_ACTIVE_LOW>;
+                        gpio_function = <4>;
+                };                          
+        };
+
+        rp_gpio{
+                status = "okay";
+                compatible = "rp_gpio";
+                
+                /**
+                 * gpioxxx {                    // the node name will display on /proc/rp_gpio, you can define any character string
+                 *      gpio_num = <>;          // gpio you want ot control
+                 *      gpio_function = <>;     // function of current gpio： 0 output, 1 input, 3 blink
+                 *      gpio_event = <KEY_F14>; // optional property used to define gpio report event such as KEY_F14, only works incase of gpio_function = <1>;
+                 *    };
+                 */
+/*
+		gpio3_a7 {
+			gpio_num = <&gpio3 RK_PA7 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+		};
+
+		gpio3_b0 {
+                        gpio_num = <&gpio3 RK_PB0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+*/
+		gpio4_a0 {
+                        gpio_num = <&gpio4 RK_PA0 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+		gpio4_a1 {
+                        gpio_num = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
+                        gpio_function = <0>;
+                };
+
+        };
+	
+	stm706 {
+                status = "okay";
+                compatible = "stm706";
+                reset_gpio = <&gpio0 RK_PC2 GPIO_ACTIVE_HIGH>;
+                wdt_gpio = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
+        };
+        
+        
+	vcc3v3_pi6c: vcc3v3_pi6c { //pcie3 clk enable for m.2
+                compatible = "regulator-fixed";
+                regulator-name = "vcc3v3_pi6c";
+                regulator-always-on;
+                regulator-boot-on;
+                regulator-min-microvolt = <3300000>;
+                regulator-max-microvolt = <3300000>;
+                enable-active-high;
+                gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&pcie_clk_control>;
+        };
+
+	vdd3v3_m2: vdd3v3_m2 {   //m.2 power enable
+                compatible = "regulator-fixed";
+                regulator-name = "vdd3v3_m2";
+                regulator-always-on;
+                regulator-boot-on;
+                regulator-min-microvolt = <3300000>;
+                regulator-max-microvolt = <3300000>;
+                enable-active-high;
+                gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&vdd_m2_control>;
+        };
+        
+};
+
+&vcc5v0_sys {
+    enable-active-high;
+    gpio = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&vcc5v0_pin>;
+};
+
+&vdd_3v3 {
+    enable-active-high;	
+    pinctrl-names = "default";
+    pinctrl-0 = <&vdd3v3_pin>;
+    gpio = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+};
+
+&vcc3v3_sd {
+	// enable-active-high;	//active low
+	pinctrl-names = "default";
+	pinctrl-0 = <&vcc3v3_sd_pin>;
+        gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
+};
+
+&vdd_cpu {
+	pinctrl-names = "default";
+	pinctrl-0 = <&vsel1_gpio>;
+	vsel-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+};
+
+&pmu_io_domains {
+        status = "okay";
+        pmuio2-supply = <&vcc3v3_pmu>;
+        vccio1-supply = <&vcc_3v3>;
+        vccio3-supply = <&vcc_3v3>;
+        vccio4-supply = <&vcc_3v3>;
+        vccio5-supply = <&vcc_3v3>;
+        vccio6-supply = <&vcc_1v8>;
+        vccio7-supply = <&vcc_3v3>;
+};
+
+
+&i2c1 {
+	status = "okay";
+        rtc@51 {
+                status = "okay";
+                compatible = "rtc,hym8563";
+                reg = <0x51>;
+	  //      irq_gpio = <&gpio0 RK_PD3 GPIO_ACTIVE_LOW>;
+        };
+};
+
+&i2c2
+{
+	status = "okay";
+	pinctrl-names = "default";
+        pinctrl-0 = <&i2c2m1_xfer>;
+};
+
+&i2c4
+{
+	status = "okay";
+	pinctrl-names = "default";
+  	pinctrl-0 = <&i2c4m0_xfer>;
+};
+
+&i2c5 {
+	status = "okay";
+	pinctrl-names = "default";
+  	pinctrl-0 = <&i2c5m0_xfer>;	
+};
+
+&uart0 {
+	status = "disabled";
+};
+
+&uart3 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart3m1_xfer>;
+};
+
+&uart4 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4m0_xfer>;
+};
+
+&uart5 {
+    status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart5m1_xfer>;
+};
+
+&uart7 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart7m1_xfer>;
+};
+
+
+&spi2 {
+	status = "okay";
+    pinctrl-0 = <&spi2m1_cs0 &spi2m1_pins>;
+    pinctrl-1 = <&spi2m1_cs0 &spi2m1_pins_hs>;
+
+    spi_dev@0 {
+        compatible = "rockchip,spidev";
+        reg = <0>;
+        spi-max-frequency = <12000000>;
+        spi-lsb-first;
+    };
+};
+
+/******** must be close,if not system no run ******/
+&dmc {
+       status = "disabled";
+};
+
+&dfi {
+       status = "disabled";
+};
+
+/*********************************************/
+
+
+&pwm1 {
+    status = "okay";
+    pinctrl-names = "active";
+    pinctrl-0 = <&pwm1m0_pins>;
+};
+
+&pwm2 {
+    status = "okay";
+    pinctrl-names = "active";
+    pinctrl-0 = <&pwm2m0_pins>;
+};
+
+
+
+
+&pwm12{
+	status = "disabled";
+	pinctrl-0 = <&pwm12m1_pins>;	
+        pinctrl-names = "active";
+};
+
+&pwm13{
+        status = "disabled";
+        pinctrl-0 = <&pwm13m1_pins>; 
+        pinctrl-names = "active";
+};
+
+/** LCD backlight
+ * By default, we all use backlight5 node whether it is mipi, lvds or edp,
+ */ 
+/** LCD configuration */
+#if defined(RP_SINGLE_LCD)
+
+    #if defined(RP_MIPI12LVDS)
+	&backlight5 {
+                pwms = <&pwm8 0 25000 1>;
+        };
+
+	#if defined(RP_DUALLVDS)
+	&backlight5 {
+                pwms = <&pwm8 0 25000 0>;
+        };
+
+        #else
+        #endif
+
+    #elif defined(RP_EDP_USED)
+    #endif
+    
+#else
+    #ifdef RP_MIPI12LVDS
+	
+    #endif
+#endif    
+
+
+/** headphone detect pin */
+&rk_headset {
+    status = "disabled";
+    pinctrl-0 = <&hp_det>;
+};
+
+/** wifi/bt config */
+&sdio_pwrseq {
+    pinctrl-0 = <&wifi_enable_h>;
+    reset-gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_LOW>;
+};
+
+&sdmmc2 {
+	pinctrl-names = "default";
+    	pinctrl-0 = <&sdmmc2m0_bus4 &sdmmc2m0_cmd &sdmmc2m0_clk>;
+    	status = "okay";
+};
+
+&sdmmc1 {
+    status = "disabled";
+};
+
+&wireless_wlan {
+	pinctrl-0 = <&wifi_host_wake_irq>;
+    WIFI,host_wake_irq = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
+};
+
+&wireless_bluetooth {
+    uart_rts_gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_LOW>;
+    pinctrl-0 = <&uart1m1_rtsn>;
+    pinctrl-1 = <&uart1_gpios>;
+    BT,reset_gpio = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
+    BT,wake_gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
+    BT,wake_host_irq = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
+    status = "okay";
+};
+
+&uart1 {
+    status = "okay";
+    pinctrl-names = "default";
+    pinctrl-0 = <&uart1m1_xfer &uart1m1_ctsn>;
+};
+
+&uart8 {
+    status = "disabled";
+};
+
+
+/** pcie2x1 */
+&vcc3v3_pcie {
+    /**
+     * delete for gpio used to be bt_wake_host
+     * and the vcc3v3_pcie need not control on our board.
+     */
+    /delete-property/ gpio;
+};
+
+/******* pcie2x1x1 -rtl8111hs*****/
+&pcie2x1 {
+    status = "okay";
+    
+    reset-gpios = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
+};
+
+/******* pcie3x1x1 -rtl8111hs*****/
+&pcie3x1 {
+    status = "okay";
+    reset-gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_HIGH>;
+};
+
+/******* pcie3x2x1 -m.2*****/
+&pcie3x2 {
+    status = "okay";
+    reset-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
+};
+
+&pinctrl {
+	pmic {
+		vsel1_gpio: vsel1-gpio {
+			rockchip,pins =
+				<0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+
+	power_pins {
+		vdd3v3_pin: vdd3v3-pin {
+			rockchip,pins =
+				<4 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		vcc5v0_pin: vcc5v0-pin {
+			rockchip,pins =
+				<4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		vcc3v3_sd_pin: vcc3v3-sd-pin {
+			rockchip,pins =
+				<0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+        
+        led_pin: led-pin {
+			rockchip,pins =
+				<0 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+        	};
+        fan_pin: fan-pin {
+			rockchip,pins =
+				<4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
+        	};
+        usb_pins: usb-pins {
+			rockchip,pins =
+                /* otg power en */
+				<4 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>,
+                /* hub reset pin */
+				<3 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>,
+                /* usb3.0 power en */
+				<4 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>,
+                /* usb2.0 vdd0 en */
+				<4 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>,
+		/* usb2.0 vdd1 en */
+                                <3 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
+        	};
+	};
+    
+	headphone {     //redefine hp detect pin
+        hp_det: hp-det {
+            rockchip,pins =
+                <2 RK_PD3 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
+	};
+    
+    sdio-pwrseq {   //redefine sdio power pin     
+        wifi_enable_h: wifi-enable-h {
+            rockchip,pins = <3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
+        };
+    };
+    wireless-wlan { //redefine wlaD4wake host pin
+        wifi_host_wake_irq: wifi-host-wake-irq {
+            rockchip,pins = <3 RK_PD4 0 &pcfg_pull_down>;
+        };
+    };  
+    wireless-bluetooth {
+        uart1_gpios: uart1-gpios {
+            rockchip,pins = <4 RK_PB6 0 &pcfg_pull_none>;
+        };
+    };
+
+	pcie3_control{
+                pcie_clk_control: pcie_clk_control {
+                        rockchip,pins =
+                        <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+                };
+                vdd_m2_control: vdd_m2_control {
+                        rockchip,pins =
+                        <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
+                };
+        }; 
+};
+

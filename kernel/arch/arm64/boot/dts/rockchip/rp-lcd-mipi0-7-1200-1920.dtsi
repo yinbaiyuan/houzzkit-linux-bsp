@@ -1,0 +1,212 @@
+#include "rp-lcd-hdmi.dtsi"
+#define RP_SINGLE_LCD
+
+
+
+
+
+&dsi0 {
+	status = "okay";
+	rockchip,lane-rate = <900>;
+	dsi0_panel: panel@0 {
+		status = "okay";
+		compatible = "simple-panel-dsi";
+		reg = <0>;
+		reset-delay-ms = <60>;
+		enable-delay-ms = <60>;
+		prepare-delay-ms = <60>;
+		unprepare-delay-ms = <60>;
+		disable-delay-ms = <60>;
+		dsi,flags = <(MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+			MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET)>;
+		dsi,format = <MIPI_DSI_FMT_RGB888>;
+		dsi,lanes  = <4>;
+		
+		/**
+		 * power-supply = <>;
+		 * reset-gpios = <>;
+		 *
+		 * lcd reset pin and power supply
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+		
+		panel-init-sequence = [
+			39 00 03 b7 50 00
+			39 00 03 b8 00 00
+			39 10 03 b9 00 00
+			39 10 03 ba 14 42
+			39 10 03 bb 03 00
+			39 60 03 b9 01 00
+			39 10 03 de 03 00
+			39 60 03 c9 02 23
+			
+			39 00 02 b0 00
+			39 00 06 14 08 b0 00 22 00
+			39 30 02 b4 0c
+			39 40 03 b6 3a d3
+			39 50 02 51 e6
+			39 30 02 53 2c
+			
+			05 78 01 29
+			05 78 01 11
+			
+			39 00 03 b7 50 00
+			39 00 03 b8 00 00
+			39 10 03 b9 00 00
+			39 10 03 ba 8c 83
+			39 10 03 bb 03 00
+			39 60 03 b9 01 00
+			39 10 03 c9 02 23
+			39 60 03 ca 01 23
+			39 10 03 cb 10 05
+			39 10 03 cc 05 10
+			39 10 03 d0 00 00
+			
+			
+			39 10 03 b6 03 00
+			39 10 03 de 03 00
+			39 10 03 d6 05 00
+			39 60 03 b7 4b 02
+			
+			05 00 01 2c
+		];
+		
+		panel-exit-sequence = [
+			05 00 01 28
+			05 78 01 10
+		];
+
+		disp_timings0: display-timings {
+			native-mode = <&dsi0_timing0>;
+			dsi0_timing0: timing0 {
+                                clock-frequency = <140000000>;
+                                hactive = <1200>;
+                                vactive = <1920>;
+				hback-porch = <30>;
+				hfront-porch = <60>;
+                                vback-porch = <16>;
+                                vfront-porch = <16>;
+                                hsync-len = <4>;
+                                vsync-len = <2>;
+                                hsync-active = <0>;
+                                vsync-active = <0>;
+                                de-active = <0>;
+                                pixelclk-active = <0>;
+			};
+		};
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				panel_in_dsi: endpoint {
+					remote-endpoint = <&dsi_out_panel>;
+				};
+			};
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+			dsi_out_panel: endpoint {
+				remote-endpoint = <&panel_in_dsi>;
+			};
+		};
+	};
+
+};
+
+
+
+
+&dsi0_in_vp0 {
+	status = "disabled";
+};
+
+&dsi0_in_vp1 {
+	status = "okay";
+};
+
+&video_phy0 {
+	status = "okay";
+};
+
+&route_dsi0 {
+	status = "okay";
+	connect = <&vp1_out_dsi0>;
+};
+
+
+
+	
+&gt9xx  {
+	status = "okay";
+	compatible = "goodix,gt9xx";
+	reg = <0x5d>;
+	gtp_resolution_x = <1200>;
+	gtp_resolution_y = <1920>;
+	gtp_int_tarigger = <1>;
+	gtp_change_x2y = <0>;
+	gtp_overturn_x = <0>;
+	gtp_overturn_y = <0>;
+	gtp_send_cfg = <1>;
+	gtp_touch_wakeup = <1>;
+
+	/**
+	 * goodix_rst_gpio = <>;
+	 * goodix_irq_gpio = <>;
+	 *
+	 * touch panel interrupt and reset pin
+	 * please refer to ***-lcd-gpio.dtsi
+	 * that included in main dts.
+	 */
+
+	goodix,cfg-group2 = [	//sensor id 2 for new tp
+			44 B0 04 80 07 05 45 00 02 08 28
+			08 46 32 03 05 00 00 00 00 00 00
+			00 00 00 00 00 8C 2C 0E B0 B2 B2
+			04 00 00 00 20 03 1C 00 01 00 00
+			00 00 00 32 00 00 00 96 D2 94 D5
+			02 00 00 00 04 8D 9B 00 85 A6 00
+			7F B1 00 79 BD 00 73 CB 00 73 00
+			00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 00
+			00 00 02 04 06 08 0A 0C 0E 10 12
+			14 16 18 1A 1C FF FF FF FF FF FF
+			FF FF FF FF FF FF FF FF FF FF 00
+			02 04 06 08 0A 0C 0F 10 12 13 14
+			28 26 24 22 21 20 1F 1E 1D 1C 18
+			16 FF FF FF FF FF 00 00 00 00 00
+			00 00 00 00 00 00 00 00 34 01
+		];
+	goodix,cfg-group5 = [
+		5C B0 04 80 07 05 45 00 02 08
+		28 08 46 32 03 05 00 00 00 00
+		00 00 00 00 00 00 00 8C 2C 0E
+		22 24 BB 0A 00 00 02 01 03 1C
+		00 01 00 00 00 00 00 32 00 00
+		00 14 46 94 C5 02 00 00 00 04
+		E3 16 00 B4 1D 00 8D 25 00 72
+		30 00 5D 3E 00 5D 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00
+		00 00 02 04 06 08 0A 0C 0E 10
+		12 14 16 18 1A 1C FF FF FF FF
+		FF FF FF FF FF FF FF FF FF FF
+		FF FF 00 02 04 06 08 0A 0C 0F
+		10 12 13 14 28 26 24 22 21 20
+		1F 1E 1D 1C 18 16 FF FF FF FF
+		FF 00 00 00 00 00 00 00 00 00
+		00 00 00 00 B8 01	
+	];
+};
+

@@ -1,0 +1,11 @@
+
+
+&can1 {
+		 compatible = "rockchip,can-1.0";
+	   assigned-clocks = <&cru CLK_CAN1>;
+	   assigned-clock-rates = <150000000>;
+	   pinctrl-names = "default";
+	   pinctrl-0 = <&can1m1_pins>;
+	   status = "okay";
+};
+

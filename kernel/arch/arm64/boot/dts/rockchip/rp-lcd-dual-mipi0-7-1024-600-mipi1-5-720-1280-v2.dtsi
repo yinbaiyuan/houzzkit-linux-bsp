@@ -1,0 +1,350 @@
+#include <dt-bindings/display/media-bus-format.h>
+
+#define RP_DUAL_LCD
+
+&rpdzkj {
+        compatible = "rp_config";
+        user_version = "rpdzkj";
+        system_rotate = "0";
+				csi_camera_rotate = "0"; //all csi camera rotation //0 90 180 270 //no effect
+				csi_camera_facing = "0"; //0:auto  1:all front   2:all back //no effect
+				usb_camera_rotate = "0"; //all usb camera rotation //0 90 180 270 
+				usb_camera_facing = "0"; //0:auto  1:all front   2:all back
+        lcd_density = "160";
+        language = "zh-CN";   //zh-CN //en-US
+        time_zone = "Asia/Shanghai"; //Asia/Shanghai = +8   //Europe/London  = +1       //Africa/Casablanca     = +0;
+        not_navigation_bar = "false";
+        not_status_bar = "false";
+        default_launcher = "true";
+        has_root = "true";
+        usb_not_permission = "true";
+        gps_use = "false";
+        gps_serial_port = "/dev/ttyS4";
+        primary_device = "DSI";
+        extend_device = "DSI";
+        extend_rotate = "1";
+        extend_rotate_2 = "0";
+        rotation_efull = "true";
+        rotation_efull_2 = "false";
+        home_apk = "null";
+        status = "okay";
+};
+
+
+
+&dsi0 {
+	status = "okay";
+	rockchip,lane-rate = <480>;
+	dsi0_panel: panel@0 {
+		status = "okay";
+		compatible = "simple-panel-dsi";
+		reg = <0>;
+		reset-delay-ms = <60>;
+		enable-delay-ms = <60>;
+		prepare-delay-ms = <60>;
+		unprepare-delay-ms = <60>;
+		disable-delay-ms = <60>;
+		dsi,flags = <(MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+			MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET)>;
+		dsi,format = <MIPI_DSI_FMT_RGB888>;
+		dsi,lanes  = <4>;
+	
+		/**
+		 * power-supply = <>;
+		 * reset-gpios = <>;
+		 *
+		 * lcd reset pin and power supply
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+		 
+		panel-init-sequence = [
+			05 78 01 11
+			05 78 01 29
+		];
+		
+		panel-exit-sequence = [
+			05 00 01 28
+			05 78 01 10
+		];
+
+		disp_timings0: display-timings {
+			native-mode = <&dsi0_timing0>;
+			dsi0_timing0: timing1 {
+				clock-frequency = <51000000>;
+				hactive = <1024>;
+				vactive = <600>;
+				hback-porch = <160>;
+				hfront-porch = <136>;
+				vback-porch = <16>;
+				vfront-porch = <16>;
+				hsync-len = <4>;
+				vsync-len = <2>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <0>;
+				pixelclk-active = <1>;
+			};
+		};
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				panel_in_dsi: endpoint {
+					remote-endpoint = <&dsi_out_panel>;
+				};
+			};
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+			dsi_out_panel: endpoint {
+				remote-endpoint = <&panel_in_dsi>;
+			};
+		};
+	};
+
+};
+
+
+
+&dsi1 {
+	status = "okay";
+	//rockchip,lane-rate = <480>;
+	dsi1_panel: panel@0 {
+
+		status = "okay";
+		compatible = "simple-panel-dsi";
+		reg = <0>;
+		reset-delay-ms = <60>;
+		init-delay-ms = <60>;
+		enable-delay-ms = <60>;
+		prepare-delay-ms = <60>;
+		unprepare-delay-ms = <60>;
+		disable-delay-ms = <60>;
+		dsi,flags = <(MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+			MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET)>;
+		dsi,format = <MIPI_DSI_FMT_RGB888>;
+		dsi,lanes  = <4>;
+	
+		/**
+		 * power-supply = <>;
+		 * reset-gpios = <>;
+		 *
+		 * lcd reset pin and power supply
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+		 
+		panel-init-sequence = [
+			39 00 04 B9 F1 12 83
+
+			39 00 1C BA 33 81 05 F9 0E 0E 20 00 00 00 00 00 00 00 44 25 00 91 0A 00 00 02 4F D1 00 00 37
+
+			39 00 02 B8 26
+
+
+			39 00 04 BF 02 10 00
+
+			39 00 0B B3 07 0B 1E 1E 03 FF 00 00 00 00
+
+
+			39 00 0A C0 73 73 50 50 00 00 08 70 00
+
+			39 00 02 BC 46
+
+			39 00 02 CC 0B
+
+			39 00 02 B4 80
+
+			39 00 04 B2 C8 12 A0
+
+			39 00 0F E3 07 07 0B 0B 03 0B 00 00 00 00 FF 80 C0 10
+
+
+			39 00 0D C1 53 00 32 32 77 F1 FF FF CC CC 77 77
+
+			39 00 03 B5 09 09
+
+			39 00 03 B6 B7 B7
+
+			39 00 40 E9 C2 10 0A 00 00 81 80 12 30 00 37 86 81 80 37 18 00 05 00 00 00 00 00 05 00 00 00 00 F8 BA 46 02 08 28 88 88 88 88 88 F8 BA 57 13 18 38 88 88 88 88 88 00 00 00 03 00 00 00 00 00 00 00 00 00
+
+			39 00 3E EA 07 12 01 01 02 3C 00 00 00 00 00 00 8F BA 31 75 38 18 88 88 88 88 88 8F BA 20 64 28 08 88 88 88 88 88 23 10 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+			39 00 23 E0 00 02 04 1A 23 3F 2C 28 05 09 0B 10 11 10 12 12 19 00 02 04 1A 23 3F 2C 28 05 09 0B 10 11 10 12 12 19
+
+
+			05 ff 01 11 ////Sleep Out
+
+			05 32 01 29 ///Display On
+		];
+		
+		panel-exit-sequence = [
+			05 00 01 28
+			05 78 01 10
+		];
+
+		disp_timings1: display-timings {
+			native-mode = <&dsi1_timing0>;
+			dsi1_timing0: timing0 {
+                                clock-frequency = <60000000>;
+                                hactive = <720>;
+                                vactive = <1280>;
+                                hback-porch = <40>;
+                                hfront-porch = <40>;
+                                vback-porch = <11>;
+                                vfront-porch = <16>;
+                                hsync-len = <10>;
+                                vsync-len = <3>;
+                                hsync-active = <0>;
+                                vsync-active = <0>;
+                                de-active = <0>;
+                                pixelclk-active = <0>;
+			};
+		};
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				panel_in_dsi1: endpoint {
+					remote-endpoint = <&dsi1_out_panel>;
+				};
+			};
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+			dsi1_out_panel: endpoint {
+				remote-endpoint = <&panel_in_dsi1>;
+			};
+		};
+	};
+};
+
+
+
+&dsi0_in_vp0 {
+	status = "disabled";
+};
+
+&dsi0_in_vp1 {
+	status = "okay";
+};
+
+&dsi1_in_vp0 {
+	status = "okay";
+};
+
+&dsi1_in_vp1 {
+	status = "disabled";
+};
+
+
+&video_phy0 {
+	status = "okay";
+};
+
+&video_phy1 {
+	status = "okay";
+};
+
+
+
+&route_dsi1 {
+	status = "okay";
+	connect = <&vp0_out_dsi1>;
+};
+
+&route_dsi0 {
+	status = "okay";
+	connect = <&vp1_out_dsi0>;
+};
+
+
+&gt9xx {
+        status = "okay";
+
+        compatible = "goodix,gt9xx";
+        reg = <0x5d>;
+        gtp_resolution_x = <1024>;
+        gtp_resolution_y = <600>;
+        gtp_int_tarigger = <1>;
+        gtp_change_x2y = <0>;
+        gtp_overturn_x = <0>;
+        gtp_overturn_y = <0>;
+        gtp_send_cfg = <1>;
+        gtp_touch_wakeup = <1>;
+
+		/**
+		 * goodix_rst_gpio = <>;
+		 * goodix_irq_gpio = <>;
+		 *
+		 * touch panel interrupt and reset pin
+		 * please refer to ***-lcd-gpio.dtsi
+		 * that included in main dts.
+		 */
+
+        goodix,cfg-group0 = [
+			41 00 04 58 02 05 7D 00 01 2F 28 
+			0F 50 32 03 05 00 00 00 00 00 00 
+			00 18 1A 1E 14 89 0D 0C 2C 2A 0C 
+			08 00 00 00 82 03 1D 0A 32 05 0A 
+			32 00 00 00 00 00 0B 1E 50 94 E5 
+			02 08 00 00 04 A7 21 00 8B 28 00 
+			73 31 00 62 3B 00 52 48 00 52 00 
+			00 00 00 00 00 00 00 00 00 00 00 
+			00 00 00 00 00 00 00 00 00 00 00 
+			00 00 00 00 00 00 00 00 32 50 00 
+			00 00 1C 1A 18 16 14 12 10 0E 0C 
+			0A 08 06 04 02 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 2A
+			29 28 26 24 22 21 20 1F 1E 1D 18
+			16 14 13 12 10 0F 0C 0A 08 06 FF
+			FF FF FF 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 3B 01
+            ];
+        goodix,cfg-group5 = [
+			FF 00 04 58 02 05 0D 04 01
+			0A 28 0A 50 32 03 05 00 00
+			00 00 00 00 08 00 00 00 00
+			8B 2B 0E 30 32 0F 0A 00 00
+			00 83 02 1D 00 00 00 00 00
+			03 03 32 00 00 00 24 60 94
+			C0 02 00 00 00 04 93 27 00
+			80 30 00 70 3B 00 65 47 00
+			5C 57 00 5C 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00
+			00 00 00 00 1C 1A 18 16 14
+			12 10 0E 0C 0A 08 06 04 02
+			00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 26 24
+			22 21 20 1F 1E 1D 1C 18 16
+			13 12 10 0F 0C 0A 08 06 04
+			02 00 FF FF FF FF 00 00 00
+			00 00 00 00 00 00 00 00 00
+			00 00 00 00 6A 01
+        ];
+};
+
+
+
+
