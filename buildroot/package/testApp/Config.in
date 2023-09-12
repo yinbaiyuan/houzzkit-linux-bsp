@@ -1,0 +1,4 @@
+config BR2_PACKAGE_TESTAPP
+    bool "testApp"
+    help
+        this is a app for rpdzkj function test

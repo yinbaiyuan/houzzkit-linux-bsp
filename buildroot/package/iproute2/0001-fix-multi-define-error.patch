@@ -1,0 +1,67 @@
+From fa11121e5c14f4376d17924227be65957ae1e54f Mon Sep 17 00:00:00 2001
+From: tanzh <2522850012@qq.com>
+Date: Wed, 23 Nov 2022 19:32:30 +0800
+Subject: [PATCH] fix multi define error
+
+---
+ bridge/fdb.c   | 2 +-
+ bridge/mdb.c   | 2 +-
+ ip/ipmonitor.c | 2 +-
+ ip/ipmroute.c  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/bridge/fdb.c b/bridge/fdb.c
+index c2f654c..969fdb7 100644
+--- a/bridge/fdb.c
++++ b/bridge/fdb.c
+@@ -31,7 +31,7 @@
+ 
+ static unsigned int filter_index, filter_vlan, filter_state;
+ 
+-json_writer_t *jw_global;
++static json_writer_t *jw_global;
+ 
+ static void usage(void)
+ {
+diff --git a/bridge/mdb.c b/bridge/mdb.c
+index 748091b..b08d8ec 100644
+--- a/bridge/mdb.c
++++ b/bridge/mdb.c
+@@ -26,7 +26,7 @@
+ #endif
+ 
+ static unsigned int filter_index, filter_vlan;
+-json_writer_t *jw_global;
++static json_writer_t *jw_global;
+ static bool print_mdb_entries = true;
+ static bool print_mdb_router = true;
+ 
+diff --git a/ip/ipmonitor.c b/ip/ipmonitor.c
+index 3171d47..3a43894 100644
+--- a/ip/ipmonitor.c
++++ b/ip/ipmonitor.c
+@@ -26,7 +26,7 @@
+ 
+ static void usage(void) __attribute__((noreturn));
+ int prefix_banner;
+-int listen_all_nsid;
++static int listen_all_nsid;
+ 
+ static void usage(void)
+ {
+diff --git a/ip/ipmroute.c b/ip/ipmroute.c
+index b51c23c..d88afd3 100644
+--- a/ip/ipmroute.c
++++ b/ip/ipmroute.c
+@@ -44,7 +44,7 @@ static void usage(void)
+ 	exit(-1);
+ }
+ 
+-struct rtfilter {
++static struct rtfilter {
+ 	int tb;
+ 	int af;
+ 	int iif;
+-- 
+2.38.0
+

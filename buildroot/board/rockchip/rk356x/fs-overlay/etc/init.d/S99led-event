@@ -1,0 +1,3 @@
+#! /bin/sh
+
+[ -f /proc/rp_power/led ] && echo 3 > /proc/rp_power/led
