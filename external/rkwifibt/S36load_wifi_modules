@@ -1,0 +1,60 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+
+		echo 1 > /sys/class/rfkill/rfkill1/state
+
+		if [ ! -d "/userdata/" ];then
+			echo "userdata is not mounted!!!"
+			exit 1
+		fi
+
+		mkdir -p /userdata/cfg
+		mkdir -p /userdata/bin
+
+		if [ ! -f "/userdata/cfg/wpa_supplicant.conf" ];then
+			echo "wpa_supplicant.conf init"
+			cp /etc/wpa_supplicant.conf /userdata/cfg/
+			sync
+		fi
+
+		if [ ! -f "/userdata/bin/dnsmasq.conf" ];then
+			echo "wpa_supplicant.conf init"
+			cp /etc/dnsmasq.conf /userdata/bin/
+			sync
+		fi
+		
+		if [ `grep rk3566 -c /proc/device-tree/compatible` -ne '0' ];then
+                        rk_wifi_init /dev/ttyS1
+                elif [ `grep dr4-rk3568 -c /proc/device-tree/compatible` -ne '0' ];then
+                       
+		       rk_wifi_init /dev/ttyS1
+                elif [ `grep nano-rk3568 -c /proc/device-tree/compatible` -ne '0' ];then
+		
+			rk_wifi_init /dev/ttyS1
+                elif [ `grep rk3568 -c /proc/device-tree/compatible` -ne '0' ];then
+                        rk_wifi_init /dev/ttyS8
+                else
+                        echo -e "shell script rk_wfibt_init fail"
+                fi
+		
+		[ $? = 0 ] && echo "OK" || echo "FAIL"
+
+                wl PM 0
+		;;
+	stop)
+
+		echo 0 > /sys/class/rfkill/rfkill0/state
+
+		;;
+	restart|reload)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit 0
